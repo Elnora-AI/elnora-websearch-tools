@@ -12,11 +12,11 @@ The plugin's own commands and skills talk, over **HTTPS only**, to:
 - `api.firecrawl.dev` (Firecrawl)
 - `api.valyu.network` (Valyu)
 
-Setup and update additionally reach the vendors' official distribution channels, and only when you run them: the npm registry (`firecrawl-cli`, `@valyu/cli`, the `skills` installer), PyPI (`tavily-cli`), the vendors' installer endpoints (`cli.tavily.com`, `get.valyu.ai`), and GitHub (`exa-labs/agent-skills`, `tavily-ai/skills`). The vendor CLIs themselves call their own provider's API listed above. This repo adds no telemetry, no analytics, and no endpoint of its own.
+Setup and update additionally reach the vendors' official distribution channels, and only when you run them: the npm registry (`firecrawl-cli`, `@valyu/cli`, plus the `skills` installer — the skills.sh registry CLI, run via `npx skills`, which is itself third-party tooling distinct from the five vendors and from this repo), PyPI (`tavily-cli`), the vendors' installer endpoints (`cli.tavily.com`, `get.valyu.ai`), and GitHub (`exa-labs/agent-skills`, `tavily-ai/skills`). The vendor CLIs themselves call their own provider's API listed above. This repo adds no telemetry, no analytics, and no endpoint of its own.
 
 ## Credentials
 
-- Keys live in one file: `~/.config/elnora-websearch/.env` (`%USERPROFILE%\.config\elnora-websearch\.env` on Windows), created with `umask 077` / mode 0600, plain `KEY=value` lines.
+- By convention, keys live in one file: `~/.config/elnora-websearch/.env` (`%USERPROFILE%\.config\elnora-websearch\.env` on Windows), created with `umask 077` / mode 0600, plain `KEY=value` lines. The exception is when the user opts into a vendor CLI's own auth store (`firecrawl login`, `valyu login`): that key is then stored wherever the vendor keeps it, not in this file, and is governed by the vendor's own handling.
 - **The process environment always wins** — the file is only read to fill variables that are unset.
 - No command or skill in this repo ever echoes, logs, or prints a key; smoke tests reference keys as `$VAR`, never as values.
 - Keys are never committed: the repo's CI secret guard plus gitleaks fail the build if anything key-shaped enters the tracked tree, and the `.env` lives outside any repo to begin with.
@@ -35,6 +35,8 @@ Setup and update additionally reach the vendors' official distribution channels,
 | Tavily skills | `npx skills add tavily-ai/skills` (MIT) |
 | Firecrawl skills | `firecrawl setup skills --agent claude-code` (the vendor CLI installs its own skills; ISC) |
 | Valyu skill | `npx skills add @valyu/cli` (bundled in the vendor's npm package; MIT) |
+
+The Exa, Tavily, and Valyu skills are fetched with the **`skills` installer** (`npx skills`, the skills.sh registry CLI) — third-party tooling distinct from the five vendors and from this repo, and trusted on the same terms as any `npx`-run package. Firecrawl is the exception: its own CLI installs its skills.
 
 What that means for trust: **you are trusting each vendor exactly as much as if you had installed their tool directly** — no more, no less. This plugin adds convenience and a consistent key convention; it does not vet, patch, or sandbox vendor code.
 

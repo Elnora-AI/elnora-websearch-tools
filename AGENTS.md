@@ -35,7 +35,22 @@ New-Item -ItemType Directory -Force -Path $dir | Out-Null
 Add-Content "$dir\.env" "TAVILY_API_KEY=..."   # one line per provider you use
 ```
 
-**Precedence:** the process environment always wins; the file only fills variables that are unset. Load it in bash with `[ -f ~/.config/elnora-websearch/.env ] && . ~/.config/elnora-websearch/.env` (each variable that is already exported keeps its value only if you guard per-variable — simplest is to export before sourcing). Key signup URLs and free tiers: see the table in [README.md](README.md#the-providers); machine-readable facts in [`providers.json`](providers.json).
+**Precedence:** the process environment always wins; the file only fills variables that are unset. Load it in bash with:
+
+```sh
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+```
+
+PowerShell:
+
+```powershell
+Get-Content "$env:USERPROFILE\.config\elnora-websearch\.env" -ErrorAction SilentlyContinue | ForEach-Object {
+  $k,$v = $_ -split '=',2
+  if ($k -and -not (Get-Item "env:$k" -ErrorAction SilentlyContinue)) { Set-Item "env:$k" $v }
+}
+```
+
+Key signup URLs and free tiers: see the table in [README.md](README.md#the-providers); machine-readable facts in [`providers.json`](providers.json).
 
 **2. Vendor CLIs** (only for the providers you use — Exa and Perplexity are pure REST):
 
@@ -67,9 +82,9 @@ npm install -g @valyu/cli; if (-not $?) { irm https://get.valyu.ai/install.ps1 |
 | Scrape one JS-heavy or bot-protected page → markdown | `firecrawl scrape <url>` |
 | Web search via Firecrawl | `firecrawl search "query"` |
 | Map a whole site's URLs | `firecrawl map <url>` |
-| Academic / SEC / clinical-trials / patents search | `valyu search web "query" --json` |
+| Academic papers (arXiv/PubMed/bioRxiv) | `valyu search paper "query" --json` (same shape for the other typed corpora: `sec`, `bio` for clinical trials, `patent`) |
 | Cited answer from Valyu's corpora | `valyu answer "question"` |
-| Async deep research with file deliverables (CSV/XLSX/PPTX/DOCX/PDF) | `valyu deepresearch "topic"` |
+| Async deep research with file deliverables (CSV/XLSX/PPTX/DOCX/PDF) | `valyu deepresearch create "topic"` — async: returns a task ID; follow with `valyu deepresearch watch <id>`, or add `--watch` to block until done |
 | Semantic/neural search (find by meaning) | `curl -sS -X POST https://api.exa.ai/search -H "x-api-key: $EXA_API_KEY" -H 'Content-Type: application/json' -d '{"query":"…","numResults":5}'` |
 | Cited, synthesized answer (no link list) | `curl -sS https://api.perplexity.ai/chat/completions -H "Authorization: Bearer $PERPLEXITY_API_KEY" -H 'Content-Type: application/json' -d '{"model":"sonar","messages":[{"role":"user","content":"…"}]}'` |
 | Deep-research report (text) | Same Perplexity call with `"model":"sonar-deep-research"` (slow, expensive — Tier 0 allows 5 req/min) |

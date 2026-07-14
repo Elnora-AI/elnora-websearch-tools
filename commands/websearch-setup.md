@@ -91,7 +91,7 @@ New-Item -ItemType Directory -Force -Path $dir | Out-Null
 $sec = Read-Host -AsSecureString "Paste your EXA_API_KEY (input hidden)"
 $plain = [System.Net.NetworkCredential]::new('', $sec).Password
 Add-Content -Path "$dir\.env" -Value "EXA_API_KEY=$plain"
-icacls "$dir\.env" /inheritance:r /grant:r "$env:USERNAME:(R,W)" | Out-Null
+icacls "$dir\.env" /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
 Remove-Variable sec, plain
 ```
 

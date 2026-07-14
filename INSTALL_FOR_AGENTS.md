@@ -64,7 +64,7 @@ Ask the user which providers to set up. Present the table and **encourage collec
 
 **Checkpoint:** the user has named their subset. Do only those provider steps below.
 
-> **Hidden-paste note (applies to every key-saving block below):** when the user pastes a key at a hidden terminal prompt they will see **nothing** — no characters, no dots. That is hidden input working, not a bug. Paste once, press Enter. In the `printf`/`Add-Content` blocks below, the user replaces the `PASTE_YOUR_…` placeholder themselves — the key must never pass through the chat.
+> **Hidden-paste note (applies to every key-saving block below):** when the user pastes a key at a hidden terminal prompt they will see **nothing** — no characters, no dots. That is hidden input working, not a bug. Paste once, press Enter. The user runs each key-saving block in their own terminal and pastes the key at the hidden prompt — the key never appears on the command line, in shell history, or in the chat.
 
 ---
 
@@ -83,10 +83,13 @@ Semantic/neural search. No CLI — REST API + official vendor skills.
 macOS / Linux:
 
 ```sh
-mkdir -p ~/.config/elnora-websearch
 umask 077
-printf 'EXA_API_KEY=%s\n' 'PASTE_YOUR_EXA_KEY' >> ~/.config/elnora-websearch/.env
+mkdir -p ~/.config/elnora-websearch
+printf 'Paste your EXA_API_KEY (input hidden, nothing will appear): '
+read -rs KEY; echo
+printf 'EXA_API_KEY=%s\n' "$KEY" >> ~/.config/elnora-websearch/.env
 chmod 600 ~/.config/elnora-websearch/.env
+unset KEY
 ```
 
 Windows / PowerShell:
@@ -94,7 +97,11 @@ Windows / PowerShell:
 ```powershell
 $dir = "$env:USERPROFILE\.config\elnora-websearch"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-Add-Content "$dir\.env" "EXA_API_KEY=PASTE_YOUR_EXA_KEY"
+$sec = Read-Host -AsSecureString "Paste your EXA_API_KEY (input hidden)"
+$plain = [System.Net.NetworkCredential]::new('', $sec).Password
+Add-Content -Path "$dir\.env" -Value "EXA_API_KEY=$plain"
+icacls "$dir\.env" /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
+Remove-Variable sec, plain
 ```
 
 Alternatively export `EXA_API_KEY` as an environment variable — the environment always wins over the file.
@@ -111,11 +118,26 @@ Installs `build-with-exa`, `exa-search`, `exa-contents` — Exa's own skills fro
 
 ### Smoke test
 
+Load the saved keys into this shell first (fills only unset variables — process env wins):
+
+```sh
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+```
+
+```powershell
+Get-Content "$env:USERPROFILE\.config\elnora-websearch\.env" -ErrorAction SilentlyContinue | ForEach-Object {
+  $k,$v = $_ -split '=',2
+  if ($k -and -not (Get-Item "env:$k" -ErrorAction SilentlyContinue)) { Set-Item "env:$k" $v }
+}
+```
+
+Then:
+
 ```sh
 curl -sS -X POST https://api.exa.ai/search -H "x-api-key: $EXA_API_KEY" -H 'Content-Type: application/json' -d '{"query":"latest developments in battery technology","numResults":1}'
 ```
 
-(PowerShell: same `curl.exe` command with `"x-api-key: $env:EXA_API_KEY"`; source the env file variable first if it is not exported.)
+(PowerShell: same `curl.exe` command with `"x-api-key: $env:EXA_API_KEY"`. On Windows PowerShell 5.1, the inner double quotes in a single-quoted JSON body get stripped when passed to native `curl.exe` — call `curl.exe` explicitly and escape them as `\"`, or write the body to a temp file and pass `--data '@file'`. PowerShell 7+ passes the body through unchanged.)
 
 Expected: JSON with a `results` array containing one hit.
 
@@ -142,10 +164,13 @@ All-round search + extract/crawl/map. Python CLI (`tvly`) + official vendor skil
 macOS / Linux:
 
 ```sh
-mkdir -p ~/.config/elnora-websearch
 umask 077
-printf 'TAVILY_API_KEY=%s\n' 'PASTE_YOUR_tvly_KEY' >> ~/.config/elnora-websearch/.env
+mkdir -p ~/.config/elnora-websearch
+printf 'Paste your TAVILY_API_KEY (input hidden, nothing will appear): '
+read -rs KEY; echo
+printf 'TAVILY_API_KEY=%s\n' "$KEY" >> ~/.config/elnora-websearch/.env
 chmod 600 ~/.config/elnora-websearch/.env
+unset KEY
 ```
 
 Windows / PowerShell:
@@ -153,7 +178,11 @@ Windows / PowerShell:
 ```powershell
 $dir = "$env:USERPROFILE\.config\elnora-websearch"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-Add-Content "$dir\.env" "TAVILY_API_KEY=PASTE_YOUR_tvly_KEY"
+$sec = Read-Host -AsSecureString "Paste your TAVILY_API_KEY (input hidden)"
+$plain = [System.Net.NetworkCredential]::new('', $sec).Password
+Add-Content -Path "$dir\.env" -Value "TAVILY_API_KEY=$plain"
+icacls "$dir\.env" /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
+Remove-Variable sec, plain
 ```
 
 ### Install the official CLI
@@ -185,6 +214,21 @@ npx skills add tavily-ai/skills -a claude-code -y
 Installs Tavily's own skills (`tavily-search`, `tavily-extract`, `tavily-crawl`, `tavily-map`, `tavily-research`, and more) from Tavily's own repo (MIT).
 
 ### Smoke test
+
+The test passes keyless, but load the saved keys first anyway so it exercises the key (fills only unset variables — process env wins):
+
+```sh
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+```
+
+```powershell
+Get-Content "$env:USERPROFILE\.config\elnora-websearch\.env" -ErrorAction SilentlyContinue | ForEach-Object {
+  $k,$v = $_ -split '=',2
+  if ($k -and -not (Get-Item "env:$k" -ErrorAction SilentlyContinue)) { Set-Item "env:$k" $v }
+}
+```
+
+Then:
 
 ```sh
 tvly search "what is retrieval augmented generation" --json | head -c 400
@@ -218,10 +262,13 @@ Citation-grounded answers via the Sonar API. Perplexity ships **no official CLI 
 macOS / Linux:
 
 ```sh
-mkdir -p ~/.config/elnora-websearch
 umask 077
-printf 'PERPLEXITY_API_KEY=%s\n' 'PASTE_YOUR_PPLX_KEY' >> ~/.config/elnora-websearch/.env
+mkdir -p ~/.config/elnora-websearch
+printf 'Paste your PERPLEXITY_API_KEY (input hidden, nothing will appear): '
+read -rs KEY; echo
+printf 'PERPLEXITY_API_KEY=%s\n' "$KEY" >> ~/.config/elnora-websearch/.env
 chmod 600 ~/.config/elnora-websearch/.env
+unset KEY
 ```
 
 Windows / PowerShell:
@@ -229,10 +276,29 @@ Windows / PowerShell:
 ```powershell
 $dir = "$env:USERPROFILE\.config\elnora-websearch"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-Add-Content "$dir\.env" "PERPLEXITY_API_KEY=PASTE_YOUR_PPLX_KEY"
+$sec = Read-Host -AsSecureString "Paste your PERPLEXITY_API_KEY (input hidden)"
+$plain = [System.Net.NetworkCredential]::new('', $sec).Password
+Add-Content -Path "$dir\.env" -Value "PERPLEXITY_API_KEY=$plain"
+icacls "$dir\.env" /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
+Remove-Variable sec, plain
 ```
 
 ### Smoke test
+
+Load the saved keys into this shell first (fills only unset variables — process env wins):
+
+```sh
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+```
+
+```powershell
+Get-Content "$env:USERPROFILE\.config\elnora-websearch\.env" -ErrorAction SilentlyContinue | ForEach-Object {
+  $k,$v = $_ -split '=',2
+  if ($k -and -not (Get-Item "env:$k" -ErrorAction SilentlyContinue)) { Set-Item "env:$k" $v }
+}
+```
+
+Then:
 
 ```sh
 curl -sS https://api.perplexity.ai/chat/completions -H "Authorization: Bearer $PERPLEXITY_API_KEY" -H 'Content-Type: application/json' -d '{"model":"sonar","messages":[{"role":"user","content":"In one sentence: what is CRISPR?"}]}'
@@ -267,10 +333,13 @@ URL → clean markdown, crawling, site maps, plus search. npm CLI (`firecrawl`) 
 macOS / Linux:
 
 ```sh
-mkdir -p ~/.config/elnora-websearch
 umask 077
-printf 'FIRECRAWL_API_KEY=%s\n' 'PASTE_YOUR_FC_KEY' >> ~/.config/elnora-websearch/.env
+mkdir -p ~/.config/elnora-websearch
+printf 'Paste your FIRECRAWL_API_KEY (input hidden, nothing will appear): '
+read -rs KEY; echo
+printf 'FIRECRAWL_API_KEY=%s\n' "$KEY" >> ~/.config/elnora-websearch/.env
 chmod 600 ~/.config/elnora-websearch/.env
+unset KEY
 ```
 
 Windows / PowerShell:
@@ -278,7 +347,11 @@ Windows / PowerShell:
 ```powershell
 $dir = "$env:USERPROFILE\.config\elnora-websearch"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-Add-Content "$dir\.env" "FIRECRAWL_API_KEY=PASTE_YOUR_FC_KEY"
+$sec = Read-Host -AsSecureString "Paste your FIRECRAWL_API_KEY (input hidden)"
+$plain = [System.Net.NetworkCredential]::new('', $sec).Password
+Add-Content -Path "$dir\.env" -Value "FIRECRAWL_API_KEY=$plain"
+icacls "$dir\.env" /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
+Remove-Variable sec, plain
 ```
 
 ### Install the official CLI
@@ -299,11 +372,26 @@ Firecrawl's CLI installs its own skills:
 firecrawl setup skills --agent claude-code
 ```
 
-Installs the vendor's skill set (`firecrawl`, `firecrawl-scrape`, `firecrawl-search`, `firecrawl-crawl`, `firecrawl-map`, and more).
+Installs the vendor's skill set (`firecrawl-cli`, `firecrawl-scrape`, `firecrawl-search`, `firecrawl-crawl`, `firecrawl-map`, and more).
 
 **Never run `firecrawl setup defaults`** unless the user explicitly wants Firecrawl to own **every** web operation — it claims all web tasks and displaces the other providers. In this bundle, the `websearch` routing skill is the arbiter.
 
 ### Smoke test
+
+Firecrawl works keyless, but load the saved keys first anyway so `--status` reports the authenticated state (fills only unset variables — process env wins):
+
+```sh
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+```
+
+```powershell
+Get-Content "$env:USERPROFILE\.config\elnora-websearch\.env" -ErrorAction SilentlyContinue | ForEach-Object {
+  $k,$v = $_ -split '=',2
+  if ($k -and -not (Get-Item "env:$k" -ErrorAction SilentlyContinue)) { Set-Item "env:$k" $v }
+}
+```
+
+Then:
 
 ```sh
 firecrawl --status
@@ -334,10 +422,13 @@ Proprietary/academic/financial/biomedical corpora + deep research with deliverab
 macOS / Linux:
 
 ```sh
-mkdir -p ~/.config/elnora-websearch
 umask 077
-printf 'VALYU_API_KEY=%s\n' 'PASTE_YOUR_VALYU_KEY' >> ~/.config/elnora-websearch/.env
+mkdir -p ~/.config/elnora-websearch
+printf 'Paste your VALYU_API_KEY (input hidden, nothing will appear): '
+read -rs KEY; echo
+printf 'VALYU_API_KEY=%s\n' "$KEY" >> ~/.config/elnora-websearch/.env
 chmod 600 ~/.config/elnora-websearch/.env
+unset KEY
 ```
 
 Windows / PowerShell:
@@ -345,7 +436,11 @@ Windows / PowerShell:
 ```powershell
 $dir = "$env:USERPROFILE\.config\elnora-websearch"
 New-Item -ItemType Directory -Force -Path $dir | Out-Null
-Add-Content "$dir\.env" "VALYU_API_KEY=PASTE_YOUR_VALYU_KEY"
+$sec = Read-Host -AsSecureString "Paste your VALYU_API_KEY (input hidden)"
+$plain = [System.Net.NetworkCredential]::new('', $sec).Password
+Add-Content -Path "$dir\.env" -Value "VALYU_API_KEY=$plain"
+icacls "$dir\.env" /inheritance:r /grant:r "${env:USERNAME}:(R,W)" | Out-Null
+Remove-Variable sec, plain
 ```
 
 ### Install the official CLI
@@ -373,6 +468,21 @@ npx skills add @valyu/cli -a claude-code -y
 Installs `valyu-cli` — the vendor's skill, bundled in their npm package (MIT).
 
 ### Smoke test
+
+Load the saved keys into this shell first (fills only unset variables — process env wins; skip if you used `valyu login`, which stores the key in the CLI's own auth store):
+
+```sh
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+```
+
+```powershell
+Get-Content "$env:USERPROFILE\.config\elnora-websearch\.env" -ErrorAction SilentlyContinue | ForEach-Object {
+  $k,$v = $_ -split '=',2
+  if ($k -and -not (Get-Item "env:$k" -ErrorAction SilentlyContinue)) { Set-Item "env:$k" $v }
+}
+```
+
+Then:
 
 ```sh
 valyu search web "CRISPR base editing review" --json | head -c 400

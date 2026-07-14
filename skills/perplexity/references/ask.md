@@ -7,10 +7,10 @@ Load auth from [../SKILL.md](../SKILL.md) first.
 ## Basic ask
 
 ```bash
-curl -sS https://api.perplexity.ai/chat/completions \
+RESP=$(curl -sS https://api.perplexity.ai/chat/completions \
   -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
   -H 'Content-Type: application/json' \
-  -d '{"model":"sonar","messages":[{"role":"user","content":"How does HTTP/3 differ from HTTP/2?"}]}'
+  -d '{"model":"sonar","messages":[{"role":"user","content":"How does HTTP/3 differ from HTTP/2?"}]}')
 ```
 
 Extract answer + citations:

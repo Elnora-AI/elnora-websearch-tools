@@ -87,7 +87,7 @@ Three layers, three mechanisms:
 
 - **Vendor CLIs and skills** — run `/websearch-update`. CLIs update through each vendor's own updater (`uv tool upgrade tavily-cli`, `npm install -g firecrawl-cli@latest`, `valyu upgrade`); skills through `npx skills update` and `firecrawl setup skills --agent claude-code`. You are always on the vendors' latest releases.
 - **This plugin** — `/plugin marketplace update elnora-websearch-tools`.
-- **This repo** — an upstream-watch workflow tracks the five vendors' releases and opens an issue when a provider ships something that changes the facts in [`providers.json`](providers.json).
+- **This repo** — an upstream-watch workflow tracks the vendor CLIs and skill repos this plugin installs (Exa, Tavily, Firecrawl, Valyu — Perplexity ships neither) and updates a tracking issue whenever one of them publishes a new release, so the facts in [`providers.json`](providers.json) can be re-checked.
 
 ## Configuration
 

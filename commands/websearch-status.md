@@ -58,7 +58,7 @@ Then run each configured provider's smoke test and credit check. Skip providers 
 | Provider | Smoke test | Credit check |
 |---|---|---|
 | Exa | `curl -sS -X POST https://api.exa.ai/search -H "x-api-key: $EXA_API_KEY" -H 'Content-Type: application/json' -d '{"query":"latest developments in battery technology","numResults":1}'` | — (dashboard only) |
-| Tavily | `tvly search "what is retrieval augmented generation" --json \| head -c 400` (works keyless) | `tvly usage` |
+| Tavily | `tvly search "what is retrieval augmented generation" --json \| head -c 400` (works keyless) | `curl -sS https://api.tavily.com/usage -H "Authorization: Bearer $TAVILY_API_KEY"` (requires a key — skip when keyless; usage is in `account.plan_usage` / `account.plan_limit`) |
 | Perplexity | `curl -sS https://api.perplexity.ai/chat/completions -H "Authorization: Bearer $PERPLEXITY_API_KEY" -H 'Content-Type: application/json' -d '{"model":"sonar","messages":[{"role":"user","content":"In one sentence: what is CRISPR?"}]}'` | — (console only) |
 | Firecrawl | `firecrawl --status` (works keyless) | included in `--status` output |
 | Valyu | `valyu search web "CRISPR base editing review" --json \| head -c 400` | `valyu account` (on auth failure: `valyu doctor`) |

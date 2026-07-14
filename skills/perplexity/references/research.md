@@ -16,14 +16,14 @@ Do **not** run this automatically or in a loop without an explicit go-ahead. For
 ## Deep research call
 
 ```bash
-curl -sS https://api.perplexity.ai/chat/completions \
+RESP=$(curl -sS --max-time 300 https://api.perplexity.ai/chat/completions \
   -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
     "model":"sonar-deep-research",
     "messages":[{"role":"user","content":"State of the electric vehicle charging network in Europe: standards, operators, gaps, 2026 outlook."}],
     "reasoning_effort":"high"
-  }'
+  }')
 ```
 
 Extract the report and every source:

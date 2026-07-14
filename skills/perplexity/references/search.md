@@ -10,13 +10,13 @@ Load auth from [../SKILL.md](../SKILL.md) first.
 ## Path 1 — Search API (raw results)
 
 ```bash
-curl -sS https://api.perplexity.ai/search \
+RESP=$(curl -sS https://api.perplexity.ai/search \
   -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
   -H 'Content-Type: application/json' \
-  -d '{"query":"latest developments in solid-state batteries","max_results":5}'
+  -d '{"query":"latest developments in solid-state batteries","max_results":5}')
 ```
 
-Response:
+Response (in `$RESP`):
 
 ```json
 {
@@ -55,14 +55,14 @@ echo "$RESP" | python3 -c 'import sys,json;[print(r["title"]+"\n  "+r["url"]) fo
 ## Path 2 — Sonar chat (synthesized answer)
 
 ```bash
-curl -sS https://api.perplexity.ai/chat/completions \
+RESP=$(curl -sS https://api.perplexity.ai/chat/completions \
   -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
     "model":"sonar",
     "messages":[{"role":"user","content":"What changed in the EU AI Act enforcement timeline this year?"}],
     "search_recency_filter":"month"
-  }'
+  }')
 ```
 
 Pull the answer plus sources:

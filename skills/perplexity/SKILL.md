@@ -22,20 +22,15 @@ The key lives in `PERPLEXITY_API_KEY`. Process environment always wins; the shar
 **bash / zsh:**
 
 ```bash
-[ -z "$PERPLEXITY_API_KEY" ] && [ -f ~/.config/elnora-websearch/.env ] && . ~/.config/elnora-websearch/.env
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
 ```
 
 **PowerShell:**
 
 ```powershell
-if (-not $env:PERPLEXITY_API_KEY) {
-  $envFile = Join-Path $env:USERPROFILE ".config\elnora-websearch\.env"
-  if (Test-Path $envFile) {
-    Get-Content $envFile | Where-Object { $_ -match '^\s*[^#][^=]*=' } | ForEach-Object {
-      $k, $v = $_ -split '=', 2
-      Set-Item -Path "Env:$($k.Trim())" -Value $v.Trim()
-    }
-  }
+Get-Content "$env:USERPROFILE\.config\elnora-websearch\.env" -ErrorAction SilentlyContinue | ForEach-Object {
+  $k,$v = $_ -split '=',2
+  if ($k -and -not (Get-Item "env:$k" -ErrorAction SilentlyContinue)) { Set-Item "env:$k" $v }
 }
 ```
 

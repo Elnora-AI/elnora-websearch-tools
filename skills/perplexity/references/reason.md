@@ -7,14 +7,14 @@ Load auth from [../SKILL.md](../SKILL.md) first.
 ## Reason through a question
 
 ```bash
-curl -sS https://api.perplexity.ai/chat/completions \
+RESP=$(curl -sS https://api.perplexity.ai/chat/completions \
   -H "Authorization: Bearer $PERPLEXITY_API_KEY" \
   -H 'Content-Type: application/json' \
   -d '{
     "model":"sonar-reasoning-pro",
     "messages":[{"role":"user","content":"Compare PostgreSQL and MySQL for a high-write analytics workload."}],
     "reasoning_effort":"high"
-  }'
+  }')
 ```
 
 ## The `<think>` block

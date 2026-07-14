@@ -122,7 +122,7 @@
       "official_skills": {
         "source": "firecrawl/cli (installed by the CLI itself)",
         "source_url": "https://github.com/firecrawl/cli/tree/main/skills",
-        "names": ["firecrawl", "firecrawl-search", "firecrawl-scrape", "firecrawl-crawl", "firecrawl-map", "firecrawl-interact", "firecrawl-agent", "firecrawl-monitor", "firecrawl-download", "firecrawl-parse"],
+        "names": ["firecrawl-cli", "firecrawl-search", "firecrawl-scrape", "firecrawl-crawl", "firecrawl-map", "firecrawl-interact", "firecrawl-agent", "firecrawl-monitor", "firecrawl-download", "firecrawl-parse"],
         "install": "firecrawl setup skills --agent claude-code",
         "update": "npm install -g firecrawl-cli@latest && firecrawl setup skills --agent claude-code",
         "license_note": "ISC per package.json — installed via the vendor's own `firecrawl setup skills` installer, never redistributed in this repo."

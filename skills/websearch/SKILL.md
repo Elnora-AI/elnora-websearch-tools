@@ -31,7 +31,7 @@ Five providers, one decision. This skill picks the provider; the provider's own 
 | Whole-site crawl into LLM-ready markdown | Firecrawl | `firecrawl crawl` |
 | Academic literature (arXiv, PubMed, bioRxiv), clinical trials, patents | Valyu | `valyu search` (`valyu-cli` skill) |
 | Financial/SEC filings, M&A due diligence, GTM/ICP account research | Valyu | `valyu-cli` skill |
-| Research with deliverables (CSV/XLSX/PPTX/DOCX/PDF) | Valyu | `valyu deepresearch` (`valyu-cli` skill) |
+| Research with deliverables (CSV/XLSX/PPTX/DOCX/PDF) | Valyu | `valyu deepresearch create` (`valyu-cli` skill) |
 
 ## Availability check and fallbacks
 
