@@ -1,0 +1,19 @@
+{
+  "name": "elnora-websearch-tools",
+  "description": "Web search for Claude Code — one plugin that wires up the official CLIs and Agent Skills of Exa, Tavily, Perplexity, Firecrawl, and Valyu. Single-plugin marketplace.",
+  "owner": {
+    "name": "Elnora AI",
+    "email": "opensource@elnora.ai",
+    "url": "https://github.com/Elnora-AI"
+  },
+  "plugins": [
+    {
+      "name": "websearch",
+      "description": "Comprehensive web search capability from five providers' official tooling — guided setup, per-provider opt-in, a routing skill that picks the right provider per task, and one command to keep every official CLI and skill on its latest release.",
+      "source": "./",
+      "version": "0.1.0",
+      "category": "search",
+      "tags": ["websearch", "search", "exa", "tavily", "perplexity", "firecrawl", "valyu", "research"]
+    }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "name": "@elnora-ai/websearch-tools",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Web search for Claude Code — one plugin that wires up the official CLIs and Agent Skills of Exa, Tavily, Perplexity, Firecrawl, and Valyu.",
+  "license": "Apache-2.0",
+  "author": "Elnora AI <opensource@elnora.ai> (https://github.com/Elnora-AI)",
+  "homepage": "https://github.com/Elnora-AI/elnora-websearch-tools",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Elnora-AI/elnora-websearch-tools.git"
+  },
+  "type": "module",
+  "scripts": {
+    "test": "node --test __tests__/manifests.test.mjs __tests__/providers.test.mjs __tests__/content.test.mjs",
+    "check:secrets": "node scripts/check-no-secrets.mjs",
+    "check:json": "node scripts/check-json.mjs",
+    "upstream:watch": "node scripts/upstream-watch.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

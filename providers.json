@@ -1,0 +1,173 @@
+{
+  "env_file": {
+    "posix": "~/.config/elnora-websearch/.env",
+    "windows": "%USERPROFILE%\\.config\\elnora-websearch\\.env",
+    "precedence": "process environment wins over the file; the file is only read to fill variables that are unset"
+  },
+  "skills_installer": {
+    "tool": "npx skills (skills.sh registry CLI)",
+    "install_verb": "npx skills add <source> -a claude-code -y",
+    "update_all": "npx skills update",
+    "restore_from_lock": "npx skills experimental_install -a claude-code -y",
+    "lock_file": "skills-lock.json (written in the project directory where the install runs)"
+  },
+  "providers": {
+    "exa": {
+      "name": "Exa",
+      "site": "https://exa.ai",
+      "best_for": "Semantic and neural discovery: find pages by meaning, find-similar to a URL, and entity search for companies, people, research papers, and code.",
+      "env_var": "EXA_API_KEY",
+      "api_base": "https://api.exa.ai",
+      "keys": {
+        "signup": "https://dashboard.exa.ai/",
+        "key_page": "https://dashboard.exa.ai/api-keys",
+        "free_tier": "$10 free credits on signup, no credit card required (~1,000 searches); accounts with a payment method on file get an extra $7 in free credits each month.",
+        "keyless_mode": false
+      },
+      "official_cli": null,
+      "official_skills": {
+        "source": "exa-labs/agent-skills",
+        "source_url": "https://github.com/exa-labs/agent-skills",
+        "names": ["build-with-exa", "exa-search", "exa-contents"],
+        "install": "npx skills add exa-labs/agent-skills -a claude-code -y",
+        "update": "npx skills update",
+        "license_note": "No LICENSE file upstream — installed onto the user's machine via the vendor's own installer, never redistributed in this repo."
+      },
+      "official_mcp": "exa-mcp-server (npm) or hosted https://mcp.exa.ai/mcp",
+      "smoke_test": {
+        "posix": "curl -sS -X POST https://api.exa.ai/search -H \"x-api-key: $EXA_API_KEY\" -H 'Content-Type: application/json' -d '{\"query\":\"latest developments in battery technology\",\"numResults\":1}'",
+        "expect": "JSON with a results array (one hit); an {\"error\": ...} body or HTTP 401 means the key is wrong"
+      }
+    },
+    "tavily": {
+      "name": "Tavily",
+      "site": "https://tavily.com",
+      "best_for": "All-round agent web search plus first-party extract, crawl, and site-map endpoints; LLM-optimized snippets; the strongest recurring free tier.",
+      "env_var": "TAVILY_API_KEY",
+      "api_base": "https://api.tavily.com",
+      "keys": {
+        "signup": "https://app.tavily.com",
+        "key_page": "https://app.tavily.com (API Keys section on the dashboard home)",
+        "free_tier": "1,000 free API credits every month, recurring, no credit card required. Keys are prefixed tvly-.",
+        "keyless_mode": true,
+        "keyless_note": "tvly search and tvly extract work without any API key under a fair-use cap"
+      },
+      "official_cli": {
+        "bin": "tvly",
+        "package": "tavily-cli (PyPI — the npm package of the same name is a third-party squatter, never install it)",
+        "repo": "https://github.com/tavily-ai/tavily-cli",
+        "install_posix": "uv tool install tavily-cli || pipx install tavily-cli || python3 -m pip install --user tavily-cli",
+        "install_windows": "uv tool install tavily-cli; if (-not $?) { pipx install tavily-cli }; if (-not $?) { python -m pip install --user tavily-cli }",
+        "install_vendor_script": "curl -fsSL https://cli.tavily.com/install.sh | bash",
+        "update": "uv tool upgrade tavily-cli || pipx upgrade tavily-cli || python3 -m pip install --user -U tavily-cli",
+        "version_check": "tvly --version"
+      },
+      "official_skills": {
+        "source": "tavily-ai/skills",
+        "source_url": "https://github.com/tavily-ai/skills",
+        "names": ["tavily-cli", "tavily-search", "tavily-extract", "tavily-crawl", "tavily-map", "tavily-research", "tavily-dynamic-search", "tavily-best-practices"],
+        "install": "npx skills add tavily-ai/skills -a claude-code -y",
+        "update": "npx skills update",
+        "license_note": "MIT"
+      },
+      "official_mcp": "tavily-mcp (npm) or hosted mcp.tavily.com",
+      "smoke_test": {
+        "posix": "tvly search \"what is retrieval augmented generation\" --json | head -c 400",
+        "expect": "JSON with results; exit code 0. Without a key this still works in keyless fair-use mode."
+      }
+    },
+    "perplexity": {
+      "name": "Perplexity",
+      "site": "https://www.perplexity.ai",
+      "best_for": "Synthesized, citation-grounded answers: the Sonar models search, reason, and answer in one call — best for Q&A, comparative reasoning, and deep-research reports rather than raw result lists.",
+      "env_var": "PERPLEXITY_API_KEY",
+      "api_base": "https://api.perplexity.ai",
+      "keys": {
+        "signup": "https://console.perplexity.ai",
+        "key_page": "https://console.perplexity.ai — create an API Group first, then the API Keys tab (the key is shown only once)",
+        "free_tier": "No free API credits: prepaid credit billing, a credit card is required at setup but nothing is charged until you buy credits. New accounts are Tier 0 (50 requests/min on Sonar models, 5 requests/min on sonar-deep-research).",
+        "keyless_mode": false
+      },
+      "official_cli": null,
+      "official_skills": null,
+      "bundled_skills_note": "Perplexity ships no official CLI or skills (their official Claude Code plugin is MCP-only), so this plugin bundles its own curl-based skills over the official Sonar API — see skills/perplexity/.",
+      "official_mcp": "@perplexity-ai/mcp-server (npm), also installable as the official 'perplexity' Claude Code plugin from perplexityai/modelcontextprotocol",
+      "smoke_test": {
+        "posix": "curl -sS https://api.perplexity.ai/chat/completions -H \"Authorization: Bearer $PERPLEXITY_API_KEY\" -H 'Content-Type: application/json' -d '{\"model\":\"sonar\",\"messages\":[{\"role\":\"user\",\"content\":\"In one sentence: what is CRISPR?\"}]}'",
+        "expect": "JSON with choices[0].message.content and a citations/search_results field; HTTP 401 means the key is wrong"
+      }
+    },
+    "firecrawl": {
+      "name": "Firecrawl",
+      "site": "https://www.firecrawl.dev",
+      "best_for": "Fetching and crawling arbitrary URLs into clean LLM-ready markdown: JS rendering, anti-bot handling, site mapping, page interaction, and change monitoring, plus web search.",
+      "env_var": "FIRECRAWL_API_KEY",
+      "api_base": "https://api.firecrawl.dev",
+      "keys": {
+        "signup": "https://www.firecrawl.dev/signup",
+        "key_page": "https://www.firecrawl.dev/app/api-keys (or let `firecrawl login --browser` provision it without visiting the page)",
+        "free_tier": "1,000 free credits per month, recurring, no credit card required (scrape = 1 credit/page, search = 2 per 10 results). There is also a keyless free tier for agents.",
+        "keyless_mode": true,
+        "keyless_note": "search/scrape work keyless at low volume; a key is preferred"
+      },
+      "official_cli": {
+        "bin": "firecrawl",
+        "package": "firecrawl-cli (npm — the npm package named 'firecrawl' is the SDK, not the CLI)",
+        "repo": "https://github.com/firecrawl/cli",
+        "install_posix": "npm install -g firecrawl-cli",
+        "install_windows": "npm install -g firecrawl-cli",
+        "update": "npm install -g firecrawl-cli@latest && firecrawl setup skills --agent claude-code",
+        "version_check": "firecrawl --version"
+      },
+      "official_skills": {
+        "source": "firecrawl/cli (installed by the CLI itself)",
+        "source_url": "https://github.com/firecrawl/cli/tree/main/skills",
+        "names": ["firecrawl", "firecrawl-search", "firecrawl-scrape", "firecrawl-crawl", "firecrawl-map", "firecrawl-interact", "firecrawl-agent", "firecrawl-monitor", "firecrawl-download", "firecrawl-parse"],
+        "install": "firecrawl setup skills --agent claude-code",
+        "update": "npm install -g firecrawl-cli@latest && firecrawl setup skills --agent claude-code",
+        "license_note": "ISC per package.json — installed via the vendor's own `firecrawl setup skills` installer, never redistributed in this repo."
+      },
+      "official_mcp": "firecrawl-mcp (npm), also `firecrawl setup mcp`",
+      "collision_note": "Firecrawl's umbrella skill claims ALL web tasks ('replaces WebFetch and WebSearch'). In this multi-provider bundle the websearch routing skill is the arbiter; do not run `firecrawl setup defaults` unless the user wants Firecrawl to own every web operation.",
+      "smoke_test": {
+        "posix": "firecrawl --status",
+        "expect": "Shows version, 'Authenticated via FIRECRAWL_API_KEY' (or keyless), and remaining credits"
+      }
+    },
+    "valyu": {
+      "name": "Valyu",
+      "site": "https://www.valyu.ai",
+      "best_for": "Citation-grounded knowledge work over proprietary, academic, financial, and biomedical corpora: SEC filings, M&A due diligence, arXiv/PubMed/bioRxiv papers, clinical trials, patents, plus async deep-research with file deliverables (CSV/XLSX/PPTX/DOCX/PDF).",
+      "env_var": "VALYU_API_KEY",
+      "api_base": "https://api.valyu.network",
+      "keys": {
+        "signup": "https://platform.valyu.ai",
+        "key_page": "https://platform.valyu.ai (API keys in the dashboard; `valyu login` also stores one for the CLI)",
+        "free_tier": "$10 in free credits on signup, no credit card required ($20 reported with a work-email signup).",
+        "keyless_mode": false
+      },
+      "official_cli": {
+        "bin": "valyu",
+        "package": "@valyu/cli (npm)",
+        "repo": "https://github.com/valyuAI/valyu-cli",
+        "install_posix": "npm install -g @valyu/cli || curl -fsSL https://get.valyu.ai | bash",
+        "install_windows": "npm install -g @valyu/cli; if (-not $?) { irm https://get.valyu.ai/install.ps1 | iex }",
+        "update": "valyu upgrade",
+        "version_check": "valyu --version"
+      },
+      "official_skills": {
+        "source": "@valyu/cli (skill bundled in the npm package; repo mirror valyuAI/skills)",
+        "source_url": "https://github.com/valyuAI/valyu-cli/tree/main/skills/valyu-cli",
+        "names": ["valyu-cli"],
+        "install": "npx skills add @valyu/cli -a claude-code -y",
+        "update": "npx skills update",
+        "license_note": "MIT"
+      },
+      "official_mcp": "valyuAI/valyu-mcp-js (repo install; hosted remote MCP also available) — the vendor recommends the CLI + skill over MCP",
+      "smoke_test": {
+        "posix": "valyu search web \"CRISPR base editing review\" --json | head -c 400",
+        "expect": "JSON results; exit 0. `valyu doctor` diagnoses auth problems."
+      }
+    }
+  }
+}

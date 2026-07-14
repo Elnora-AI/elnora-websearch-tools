@@ -1,0 +1,36 @@
+# ============================================================
+# NEVER COMMIT API KEYS.
+# Provider keys live in ~/.config/elnora-websearch/.env (chmod 600)
+# or in your process environment — never in this repository.
+# ============================================================
+
+# Environment / key files
+.env
+.env.local
+.env.*.local
+*.env
+elnora-websearch.env
+
+# Maintainer's private denylist for the secret guard — NEVER commit
+scripts/.no-secrets-denylist.txt
+
+# Node.js (CI tooling / guard scripts only — zero runtime deps)
+node_modules/
+npm-debug.log*
+*.tgz
+
+# Vendor skills installed into a project (installed by vendors, not vendored here)
+.claude/skills/
+skills-lock.json
+
+# Coverage
+coverage/
+.coverage
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

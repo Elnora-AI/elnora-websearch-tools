@@ -1,0 +1,35 @@
+name: Upstream Watch
+
+# Daily check of the vendor CLIs and Agent Skills this plugin installs
+# (npm, PyPI, GitHub HEAD). State lives in a single pinned issue labeled
+# "upstream-watch"; on change the script updates the issue and comments
+# with exactly what moved. Network or rate-limit trouble exits 0 — a watch
+# job must never turn CI red.
+
+on:
+  schedule:
+    - cron: "17 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  issues: write
+  contents: read
+
+concurrency:
+  group: upstream-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    name: Upstream Watch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "20"
+      - name: Check upstream releases
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: node scripts/upstream-watch.mjs
