@@ -1,7 +1,7 @@
 # CodeQL Security Scanning
 #
 # SAST for the JavaScript in this repo using GitHub's CodeQL engine.
-# Evidence: Security tab > Code scanning alerts. Only runs when the repo is public.
+# Evidence: Security tab > Code scanning alerts.
 
 name: CodeQL Security Analysis
 
@@ -22,7 +22,6 @@ concurrency:
 jobs:
   analyze:
     name: Analyze (${{ matrix.language }})
-    if: ${{ github.repository_visibility == 'public' }}
     runs-on: ubuntu-latest
     permissions:
       actions: read

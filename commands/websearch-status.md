@@ -50,7 +50,7 @@ Skill presence per provider:
 If `$ARGUMENTS` contains `--live`, first load the env file into the shell (unset vars only — process env wins):
 
 ```bash
-while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
 ```
 
 Then run each configured provider's smoke test and credit check. Skip providers with no key and no keyless mode.

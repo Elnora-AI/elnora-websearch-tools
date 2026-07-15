@@ -4,7 +4,6 @@
 
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](LICENSE)
 [![CI](https://github.com/Elnora-AI/elnora-websearch-tools/actions/workflows/ci.yml/badge.svg)](https://github.com/Elnora-AI/elnora-websearch-tools/actions/workflows/ci.yml)
-[![Release Please](https://github.com/Elnora-AI/elnora-websearch-tools/actions/workflows/release-please.yml/badge.svg)](https://github.com/Elnora-AI/elnora-websearch-tools/actions/workflows/release-please.yml)
 
 ---
 
