@@ -100,7 +100,7 @@ Alternatively they can edit `~/.config/elnora-websearch/.env` directly — plain
 Before running any smoke test below, load the file into your shell (process env still wins — only fill unset vars):
 
 ```bash
-while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
+[ -f ~/.config/elnora-websearch/.env ] && while IFS='=' read -r k v; do [ -n "$k" ] && [ -z "$(eval echo \$$k)" ] && export "$k=$v"; done < ~/.config/elnora-websearch/.env
 ```
 
 ```powershell
