@@ -108,16 +108,19 @@ Read [`SAFETY.md`](SAFETY.md). In short: nothing leaves your machine except HTTP
 
 ## Part of the Elnora family
 
-elnora-websearch-tools is one of a family of universal, config-driven Claude Code tools from [Elnora AI](https://github.com/Elnora-AI). Each works 100% standalone; install more than one and they chain.
+Open-source agent tooling from [Elnora AI](https://github.com/Elnora-AI) — free, universal, config-driven tools that wire Claude Code (or any AI coding agent) into the systems you run your company on. Each works 100% standalone; install several and they chain into end-to-end workflows.
 
-- [**knowledge-vault**](https://github.com/Elnora-AI/knowledge-vault) — your Obsidian vault as first-class agent memory. **Chain:** research a topic with the router, then `/note` files the sourced summary into your vault with frontmatter and cross-links — searches become permanent knowledge.
-- [**elnora-google-workspace**](https://github.com/Elnora-AI/elnora-google-workspace) — Gmail, Calendar, Drive, Docs as a CLI + plugin. **Chain:** enrich a meeting prep with Exa company search and a Perplexity briefing, then `gw docs create` turns it into a shareable Google Doc.
-- [**elnora-slack**](https://github.com/Elnora-AI/elnora-slack) — the full Slack Web API as an agent-friendly CLI. **Chain:** answer a teammate's question in a thread with a Perplexity-cited answer, posted through the draft-and-approve gate.
-- [**elnora-linear**](https://github.com/Elnora-AI/elnora-linear) — Linear issue management for Claude Code. **Chain:** triage a bug report by Firecrawl-scraping the linked docs and attaching the relevant excerpt to the Linear issue.
-- [**elnora-whatsapp**](https://github.com/Elnora-AI/elnora-whatsapp) — WhatsApp bridge for agents. **Chain:** a scheduled agent runs a Tavily news search each morning and sends the digest to your WhatsApp.
-- [**elnora-merit-aktiva**](https://github.com/Elnora-AI/elnora-merit-aktiva) — Merit Aktiva accounting as a CLI + plugin. **Chain:** verify a new counterparty before invoicing — Valyu pulls the registry and filings context while Merit creates the customer record.
-
-Every tool follows the same contract: one-line install, nothing hardcoded, your config drives everything. Browse the whole family on the [Elnora-AI org profile](https://github.com/Elnora-AI).
+<!-- ELNORA-FAMILY:START -->
+- [elnora-linear](https://github.com/Elnora-AI/elnora-linear) — Linear issue management — search, bulk edit, agents, and a config-driven curator
+- [elnora-slack](https://github.com/Elnora-AI/elnora-slack) — the entire Slack Web API as a CLI plus agent skills with a draft-and-approve send gate
+- [elnora-whatsapp](https://github.com/Elnora-AI/elnora-whatsapp) — read, search, and send WhatsApp from your own paired account, 100% local
+- [elnora-google-workspace](https://github.com/Elnora-AI/elnora-google-workspace) — Gmail, Calendar, Drive, Docs, Sheets, Forms, Tasks, plus any Google API via Discovery
+- [elnora-merit-aktiva](https://github.com/Elnora-AI/elnora-merit-aktiva) — Merit Aktiva accounting and Merit Palk payroll as a CLI and plugin
+- [elnora-vanta](https://github.com/Elnora-AI/elnora-vanta) — read-only Vanta compliance — frameworks, tests, controls, and vulnerabilities as agent-friendly JSON
+- [elnora-luma](https://github.com/Elnora-AI/elnora-luma) — Luma (lu.ma) events — all 61 public API endpoints as a spec-driven CLI with safety guardrails
+- [elnora-travel](https://github.com/Elnora-AI/elnora-travel) — a real travel agent — live flights, hotels, Airbnb, Booking.com, and routes in one itinerary
+- [knowledge-vault](https://github.com/Elnora-AI/knowledge-vault) — an Obsidian-compatible knowledge base for agent teams — search and save your work to any vault
+<!-- ELNORA-FAMILY:END -->
 
 ## Contributing
 
