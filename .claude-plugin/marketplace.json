@@ -11,9 +11,18 @@
       "name": "websearch",
       "description": "Comprehensive web search capability from five providers' official tooling — guided setup, per-provider opt-in, a routing skill that picks the right provider per task, and one command to keep every official CLI and skill on its latest release.",
       "source": "./",
-      "version": "0.1.0",
+      "version": "0.1.1",
       "category": "search",
-      "tags": ["websearch", "search", "exa", "tavily", "perplexity", "firecrawl", "valyu", "research"]
+      "tags": [
+        "websearch",
+        "search",
+        "exa",
+        "tavily",
+        "perplexity",
+        "firecrawl",
+        "valyu",
+        "research"
+      ]
     }
   ]
 }
