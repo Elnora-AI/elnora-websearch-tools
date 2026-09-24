@@ -106,11 +106,21 @@ Location: `~/.config/elnora-websearch/.env` on macOS/Linux, `%USERPROFILE%\.conf
 
 Read [`SAFETY.md`](SAFETY.md). In short: nothing leaves your machine except HTTPS calls to the five providers' APIs and their official install channels; keys live in one 0600 file and are never echoed by any command or skill; this repo redistributes **no** vendor code — setup installs the vendors' own tooling from their own channels, at your request.
 
+## Contributing
+
+PRs welcome — see [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md). All provider facts live in [`providers.json`](providers.json); change them there, never inline. Dev checks: `npm test`, `npm run check:secrets`, `npm run check:json`.
+
+## License
+
+[Apache-2.0](LICENSE). Maintained by [Elnora AI](https://github.com/Elnora-AI). The vendor CLIs and skills that setup installs are licensed by their respective vendors — see [`SAFETY.md`](SAFETY.md#third-party-code-plainly).
+
 ## Part of the Elnora family
 
-Open-source agent tooling from [Elnora AI](https://github.com/Elnora-AI) — free, universal, config-driven tools that wire Claude Code (or any AI coding agent) into the systems you run your company on. Each works 100% standalone; install several and they chain into end-to-end workflows.
+Open-source agent tooling from [Elnora AI](https://github.com/Elnora-AI) — free, universal, config-driven tools that wire Claude Code (or any AI coding agent) into the systems you run your company on. Each works 100% standalone; install several and they chain into end-to-end workflows. Take them all and you have the same system Elnora runs on internally.
 
 <!-- ELNORA-FAMILY:START -->
+- [elnora-starter-kit](https://github.com/Elnora-AI/elnora-starter-kit) — one-line Claude Code + Elnora install for biologists and non-technical founders; doubles as a starter template for any new Claude Code project
+- [elnora-ai-agent-hackathon-starter-kit](https://github.com/Elnora-AI/elnora-ai-agent-hackathon-starter-kit) — one command to your first AI agents (Claude Code or Codex), built for the Elnora AI agent hackathon
 - [elnora-linear](https://github.com/Elnora-AI/elnora-linear) — Linear issue management — search, bulk edit, agents, and a config-driven curator
 - [elnora-slack](https://github.com/Elnora-AI/elnora-slack) — the entire Slack Web API as a CLI plus agent skills with a draft-and-approve send gate
 - [elnora-whatsapp](https://github.com/Elnora-AI/elnora-whatsapp) — read, search, and send WhatsApp from your own paired account, 100% local
@@ -120,12 +130,6 @@ Open-source agent tooling from [Elnora AI](https://github.com/Elnora-AI) — fre
 - [elnora-luma](https://github.com/Elnora-AI/elnora-luma) — Luma (lu.ma) events — all 61 public API endpoints as a spec-driven CLI with safety guardrails
 - [elnora-travel](https://github.com/Elnora-AI/elnora-travel) — a real travel agent — live flights, hotels, Airbnb, Booking.com, and routes in one itinerary
 - [knowledge-vault](https://github.com/Elnora-AI/knowledge-vault) — an Obsidian-compatible knowledge base for agent teams — search and save your work to any vault
+
+The Elnora platform itself — the AI agent for lab work — is open too: [elnora-cli](https://github.com/Elnora-AI/elnora-cli) (the Elnora CLI), [elnora-mcp-server](https://github.com/Elnora-AI/elnora-mcp-server) (the Elnora MCP server), [elnora-plugins](https://github.com/Elnora-AI/elnora-plugins) (the Elnora plugin marketplace), [homebrew-cli](https://github.com/Elnora-AI/homebrew-cli) (the Homebrew tap for the CLI).
 <!-- ELNORA-FAMILY:END -->
-
-## Contributing
-
-PRs welcome — see [`.github/CONTRIBUTING.md`](.github/CONTRIBUTING.md). All provider facts live in [`providers.json`](providers.json); change them there, never inline. Dev checks: `npm test`, `npm run check:secrets`, `npm run check:json`.
-
-## License
-
-[Apache-2.0](LICENSE). Maintained by [Elnora AI](https://github.com/Elnora-AI). The vendor CLIs and skills that setup installs are licensed by their respective vendors — see [`SAFETY.md`](SAFETY.md#third-party-code-plainly).
